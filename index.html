@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hypurrscan Presale - $HYPUR Token</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+        }
+        .glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+        }
+        .progress-bar {
+            height: 20px;
+            background: #4a5568;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #3b82f6, #8b5cf6);
+            transition: width 0.5s ease-in-out;
+        }
+        .swap-menu {
+            background: #2d3748;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            background: url('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=solana:3rDBXurUQeg7Jsja6cxUUMEY9XCnnwdiXi1RMSXvhJj3') center/cover no-repeat;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #1a202c;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 600px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+    <header class="w-full max-w-4xl text-center py-8">
+        <h1 class="text-4xl md:text-5xl font-bold text-blue-400">Hypurrscan Presale - $HYPUR Token</h1>
+        <p class="mt-4 text-lg text-gray-300">Join the future of decentralized finance with $HYPUR on Solana</p>
+    </header>
+
+    <main class="w-full max-w-4xl space-y-8">
+        <!-- Progress Bar -->
+        <section class="bg-gray-800 p-6 rounded-lg glow">
+            <h2 class="text-2xl font-semibold mb-4">Presale Progress</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill" style="width: 87.54%"></div>
+            </div>
+            <p class="mt-2 text-lg" id="progressText">Raised: 8754 SOL / 10000 SOL</p>
+        </section>
+
+        <!-- Swap Menu -->
+        <section class="swap-menu glow">
+            <h2 class="text-2xl font-semibold mb-4">Swap $HYPUR Tokens</h2>
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center justify-between bg-gray-700 p-4 rounded-lg">
+                    <span>You Pay</span>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/5426.png" alt="SOL" class="w-6 h-6">
+                        <span>SOL</span>
+                    </div>
+                </div>
+                <input type="number" id="solInput" min="1" value="1" class="bg-gray-600 p-3 rounded-lg text-white" placeholder="Enter SOL amount">
+                <div class="flex items-center justify-between bg-gray-700 p-4 rounded-lg">
+                    <span>You Receive</span>
+                    <div class="flex items-center space-x-2">
+                        <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/32196.png" alt="$HYPUR" class="w-6 h-6">
+                        <span>$HYPUR</span>
+                    </div>
+                </div>
+                <p id="hypurOutput" class="text-lg">12200 $HYPUR</p>
+                <input type="text" id="walletInput" class="bg-gray-600 p-3 rounded-lg text-white" placeholder="Enter your Solana wallet address">
+                <button id="payButton" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 rounded-lg transition">Proceed to Payment</button>
+                <p class="text-sm text-gray-400">Rate: 1 SOL = 12200 $HYPUR | Minimum Purchase: 1 SOL</p>
+            </div>
+        </section>
+
+        <!-- Payment Modal -->
+        <div id="paymentModal" class="modal">
+            <div class="modal-content glow">
+                <h2 class="text-2xl font-semibold mb-4">Complete Your Payment</h2>
+                <p class="mb-4">Send the specified SOL amount to the following address:</p>
+                <p class="bg-gray-700 p-2 rounded-lg break-all">3rDBXurUQeg7Jsja6cxUUMEY9XCnnwdiXi1RMSXvhJj3</p>
+                <div class="qr-code mx-auto my-4"></div>
+                <h3 class="text-xl font-semibold mt-4">How to Pay</h3>
+                <ol class="text-left list-decimal pl-6 space-y-2">
+                    <li>Copy the wallet address above or scan the QR code.</li>
+                    <li>Open your Solana-compatible wallet (e.g., Phantom, Solflare, Binance, Bybit, MEXC).</li>
+                    <li>Send the exact SOL amount to the address.</li>
+                    <li>After confirmation, your $HYPUR tokens will be sent to your provided wallet.</li>
+                </ol>
+                <button id="closeModal" class="mt-6 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg">Close</button>
+            </div>
+        </div>
+
+        <!-- Binance Withdrawal Instructions -->
+        <section class="bg-gray-800 p-6 rounded-lg glow">
+            <h2 class="text-2xl font-semibold mb-4">How to Withdraw SOL from Binance</h2>
+            <ol class="list-decimal pl-6 space-y-2">
+                <li>Log in to your Binance account and navigate to "Wallet" > "Fiat and Spot."</li>
+                <li>Find SOL in your asset list and click "Withdraw."</li>
+                <li>Paste the presale wallet address: <span class="bg-gray-700 p-1 rounded">3rDBXurUQeg7Jsja6cxUUMEY9XCnnwdiXi1RMSXvhJj3</span></li>
+                <li>Select the Solana network (SOL). Ensure the network matches.</li>
+                <li>Enter the amount of SOL you wish to send (minimum 1 SOL).</li>
+                <li>Review the transaction details and confirm with your 2FA.</li>
+                <li>Wait for the transaction to be processed (usually within minutes).</li>
+            </ol>
+            <p class="mt-4 text-sm text-gray-400">Note: Always double-check the wallet address before sending. Binance may charge a withdrawal fee.</p>
+        </section>
+
+        <!-- Project Story -->
+        <section class="bg-gray-800 p-6 rounded-lg glow">
+            <h2 class="text-2xl font-semibold mb-4">Our Story</h2>
+            <p class="text-lg">Hypurrscan is a revolutionary DeFi platform built on the Solana blockchain, aiming to provide seamless liquidity and innovative financial solutions. Founded by a team of blockchain enthusiasts in 2024, our mission is to empower users with fast, secure, and accessible decentralized finance tools. The $HYPUR token is at the core of our ecosystem, enabling staking, governance, and exclusive access to our platform's features.</p>
+        </section>
+
+        <!-- Roadmap -->
+        <section class="bg-gray-800 p-6 rounded-lg glow">
+            <h2 class="text-2xl font-semibold mb-4">Roadmap</h2>
+            <ul class="space-y-4">
+                <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-4">Q4 2024</span>
+                    <p>Launch of $HYPUR presale and community building.</p>
+                </li>
+                <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-4">Q1 2025</span>
+                    <p>Token listing on major DEXs like Raydium and integration with Solana ecosystem.</p>
+                </li>
+                <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-4">Q2 2025</span>
+                    <p>Release of Hypurrscan staking platform and governance features.</p>
+                </li>
+                <li class="flex items-start">
+                    <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center mr-4">Q3 2025</span>
+                    <p>Expansion to cross-chain bridges and partnerships with DeFi protocols.</p>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="w-full max-w-4xl text-center py-8 mt-8">
+        <p class="text-gray-400">&copy; 2025 Hypurrscan. All rights reserved.</p>
+        <p class="text-sm text-gray-500 mt-2">Disclaimer: Cryptocurrency investments carry risks. Ensure you understand the risks before participating. This site complies with Google Ads policies.</p>
+    </footer>
+
+    <script>
+        // Progress Bar Animation
+        let solRaised = 8754;
+        const targetSol = 10000;
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+
+        function updateProgress() {
+            const percentage = (solRaised / targetSol) * 100;
+            progressFill.style.width = `${percentage}%`;
+            progressText.textContent = `Raised: ${solRaised} SOL / ${targetSol} SOL`;
+        }
+
+        let interval = setInterval(() => {
+            const increase = Math.floor(Math.random() * 3) + 1;
+            if (solRaised + increase <= targetSol) {
+                solRaised += increase;
+                updateProgress();
+            }
+        }, 1000);
+
+        setTimeout(() => {
+            clearInterval(interval);
+            interval = setInterval(() => {
+                const increase = Math.floor(Math.random() * 3) + 1;
+                if (solRaised + increase <= targetSol) {
+                    solRaised += increase;
+                    updateProgress();
+                }
+            }, 15000);
+        }, 30000);
+
+        // Swap Menu Logic
+        const solInput = document.getElementById('solInput');
+        const hypurOutput = document.getElementById('hypurOutput');
+        const walletInput = document.getElementById('walletInput');
+        const payButton = document.getElementById('payButton');
+        const paymentModal = document.getElementById('paymentModal');
+        const closeModal = document.getElementById('closeModal');
+
+        solInput.addEventListener('input', () => {
+            const solAmount = parseFloat(solInput.value);
+            if (solAmount >= 1) {
+                hypurOutput.textContent = `${solAmount * 12200} $HYPUR`;
+            } else {
+                hypurOutput.textContent = 'Minimum 1 SOL';
+            }
+        });
+
+        payButton.addEventListener('click', () => {
+            if (parseFloat(solInput.value) >= 1 && walletInput.value) {
+                paymentModal.style.display = 'flex';
+            } else {
+                alert('Please enter at least 1 SOL and a valid wallet address.');
+            }
+        });
+
+        closeModal.addEventListener('click', () => {
+            paymentModal.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
